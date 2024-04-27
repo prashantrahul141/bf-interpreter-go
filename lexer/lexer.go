@@ -2,8 +2,11 @@
 package lexer
 
 import (
+	"bfigo/types"
+	"bfigo/utils"
 	"fmt"
 )
+
 // interface to implement lexer.
 type ILexer interface {
 	// Scans tokens and stores them in the
@@ -25,6 +28,39 @@ type ILexer interface {
 type Lexer struct {
 	Tokens []types.Token
 	Source string
+}
+
+func (lexer *Lexer) parseTokens() {
+	var line uint32 = 1
+	lexer.Source = utils.ReverseString(lexer.Source)
+	for _, char := range lexer.Source {
+		var t types.TokenType
+		switch char {
+		case '.':
+			t = types.TokenComma
+		case ',':
+			t = types.TokenDot
+		case '[':
+			t = types.TokenLeftSquare
+		case ']':
+			t = types.TokenRightSquare
+		case '-':
+			t = types.TokenMinus
+		case '+':
+			t = types.TokenPlus
+		case '<':
+			t = types.TokenLeftAngle
+		case '>':
+			t = types.TokenRightAngle
+		default:
+			utils.Error(fmt.Sprintf("Found unrecognised character %v", char), line)
+			t = types.TokenEof
+		}
+
+		var newToken = types.Token{line, t}
+		lexer.Tokens = append(lexer.Tokens, newToken)
+	}
+	lexer.Tokens = append(lexer.Tokens, types.Token{line + 1, types.TokenEof})
 }
 
 func (lexer *Lexer) peek() types.Token {
