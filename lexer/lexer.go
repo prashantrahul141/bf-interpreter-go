@@ -27,3 +27,18 @@ type Lexer struct {
 	Source string
 }
 
+func (lexer *Lexer) peek() types.Token {
+	if len(lexer.Tokens) > 0 {
+		return lexer.Tokens[len(lexer.Tokens)-1]
+	}
+	return types.Token{0, types.TokenEof}
+}
+
+func (lexer *Lexer) pop() types.Token {
+	if len(lexer.Tokens) > 0 {
+		last := lexer.Tokens[len(lexer.Tokens)-1]
+		lexer.Tokens = lexer.Tokens[:len(lexer.Tokens)-1]
+		return last
+	}
+	return types.Token{0, types.TokenEof}
+}
