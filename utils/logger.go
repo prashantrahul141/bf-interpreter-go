@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/charmbracelet/log"
@@ -13,6 +14,5 @@ func GetGlobalLogger() *log.Logger {
 }
 
 func Error(message string, line uint32) {
-	log.Error("'%s' at %d", message, line)
-
+	BfigoPanic(fmt.Sprintf("%s at line %d", message, line))
 }

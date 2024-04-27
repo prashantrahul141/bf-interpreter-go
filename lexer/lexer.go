@@ -66,7 +66,8 @@ func (lexer *Lexer) ParseTokens() {
 		// do nothing, dont need break because we are using hecking go.
 
 		default:
-			utils.Error(fmt.Sprintf("Found unrecognised character: '%v'", char), line)
+			utils.Error(
+				fmt.Sprintf("Found unrecognised character: '%v'", char), line)
 		}
 	}
 
