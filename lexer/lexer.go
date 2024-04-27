@@ -11,16 +11,19 @@ import (
 type ILexer interface {
 	// Scans tokens and stores them in the
 	// lexer's tokens slice.
-	parseTokens()
+	ParseTokens()
 
 	// Returns next token in the stream AND consumes it
 	// Returns TokenEOF if there are no tokens left in stream.
-	pop()
+	Pop()
 
 	// Returns next token in the stream without consuming it.
 	// Returns TokenEOF if there are no tokens left
 	// in stream.
-	peek()
+	Peek()
+
+	// Private function to add token at given line number of given type.
+	addToken(line uint32, token_type types.TokenType)
 }
 
 // Top level lexer
@@ -30,51 +33,64 @@ type Lexer struct {
 	Source string
 }
 
-func (lexer *Lexer) parseTokens() {
+func (lexer *Lexer) ParseTokens() {
 	var line uint32 = 1
-	lexer.Source = utils.ReverseString(lexer.Source)
+
 	for _, char := range lexer.Source {
-		var t types.TokenType
-		switch char {
-		case '.':
-			t = types.TokenComma
-		case ',':
-			t = types.TokenDot
-		case '[':
-			t = types.TokenLeftSquare
-		case ']':
-			t = types.TokenRightSquare
-		case '-':
-			t = types.TokenMinus
-		case '+':
-			t = types.TokenPlus
-		case '<':
-			t = types.TokenLeftAngle
-		case '>':
-			t = types.TokenRightAngle
-		default:
-			utils.Error(fmt.Sprintf("Found unrecognised character %v", char), line)
-			t = types.TokenEof
+		if char == 10 {
+			break
 		}
 
-		var newToken = types.Token{line, t}
-		lexer.Tokens = append(lexer.Tokens, newToken)
+		switch char {
+		case '.':
+			lexer.addToken(line, types.TokenDot)
+		case ',':
+			lexer.addToken(line, types.TokenComma)
+		case '[':
+			lexer.addToken(line, types.TokenLeftSquare)
+		case ']':
+			lexer.addToken(line, types.TokenRightSquare)
+		case '-':
+			lexer.addToken(line, types.TokenMinus)
+		case '+':
+			lexer.addToken(line, types.TokenPlus)
+		case '<':
+			lexer.addToken(line, types.TokenLeftAngle)
+		case '>':
+			lexer.addToken(line, types.TokenRightAngle)
+		case '\n':
+			line++
+		case ' ' | '\t':
+		// do nothing, dont need break because we are using hecking go.
+
+		default:
+			utils.Error(fmt.Sprintf("Found unrecognised character: '%v'", char), line)
+		}
 	}
+
 	lexer.Tokens = append(lexer.Tokens, types.Token{line + 1, types.TokenEof})
+
+	// reverse array because we will be using peek and pop to retrive tokens.
+	utils.ReverseArray(lexer.Tokens)
 }
 
-func (lexer *Lexer) peek() types.Token {
+func (lexer *Lexer) Peek() types.Token {
 	if len(lexer.Tokens) > 0 {
 		return lexer.Tokens[len(lexer.Tokens)-1]
 	}
 	return types.Token{0, types.TokenEof}
 }
 
-func (lexer *Lexer) pop() types.Token {
+func (lexer *Lexer) Pop() types.Token {
 	if len(lexer.Tokens) > 0 {
 		last := lexer.Tokens[len(lexer.Tokens)-1]
 		lexer.Tokens = lexer.Tokens[:len(lexer.Tokens)-1]
 		return last
 	}
 	return types.Token{0, types.TokenEof}
+}
+
+func (lexer *Lexer) addToken(line uint32, token_type types.TokenType) {
+	var newToken = types.Token{line, token_type}
+	lexer.Tokens = append(lexer.Tokens, newToken)
 }
