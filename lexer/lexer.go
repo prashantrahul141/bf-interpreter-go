@@ -76,7 +76,10 @@ func (lexer *Lexer) ParseTokens() {
 	// reverse array because we will be using peek and pop to retrive tokens.
 	utils.ReverseArray(lexer.Tokens)
 
-	utils.GetGlobalLogger().Info("parsed", "tokens", lexer.Tokens)
+	utils.GetGlobalLogger().Debug("parsed tokens (in reverse order): ")
+	for _, v := range lexer.Tokens {
+		utils.GetGlobalLogger().Debug(v)
+	}
 }
 
 func (lexer *Lexer) Peek() types.Token {
@@ -103,6 +106,6 @@ func (lexer *Lexer) Pop() types.Token {
 
 func (lexer *Lexer) addToken(line uint32, token_type types.TokenType) {
 	var newToken = types.Token{line, token_type}
-	utils.GetGlobalLogger().Info("adding", "token", newToken)
+	utils.GetGlobalLogger().Info("add", "token", newToken)
 	lexer.Tokens = append(lexer.Tokens, newToken)
 }
