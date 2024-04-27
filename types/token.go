@@ -48,5 +48,5 @@ type Token struct {
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("Token(%s, %d)", t.Token_type, t.Line)
+	return fmt.Sprintf("Token(%s, %d)\n", t.Token_type, t.Line)
 }
