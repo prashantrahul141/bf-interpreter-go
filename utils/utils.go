@@ -1,5 +1,10 @@
 package utils
 
+import (
+	"fmt"
+	"os"
+)
+
 // Reverses a given string.
 // converts them to rune first for even encoding.
 // from : https://stackoverflow.com/questions/1752414/how-to-reverse-a-string-in-go
@@ -16,4 +21,11 @@ func ReverseArray[T any](s []T) {
 	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
+}
+
+// Our panic implementation
+func BfigoPanic(message string) {
+	GetGlobalLogger().Error("PANIC :", "message", message)
+	fmt.Print(message + "\n")
+	os.Exit(1)
 }
