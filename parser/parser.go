@@ -7,26 +7,6 @@ import (
 	"fmt"
 )
 
-// interface to implement parser.
-type IParser interface {
-	// public method to start the parsing process.
-	Parse()
-	// parses one statement at a time.
-	parseOpCode()
-	// parses '[' square
-	parseLeftSquare()
-	// parses a norma token ( basically everything but '[' )
-	parseNormalToken()
-	// Matches current token with the given token.
-	matchToken(types.Token) bool
-	// Returns if there are no more tokens to parse.
-	isEmpty() bool
-	// emits int32
-	emitInt32(int32)
-	// emits op codes
-	emitOpCode(types.OpCode)
-}
-
 // Top level parser
 // Holds a reference to lexer and a array of all opcodes parsed.
 type Parser struct {

@@ -19,8 +19,8 @@ func (app *App) Run() {
 	m_lexer.ParseTokens()
 
 	var opCodes []int32
-	parser := parser.Parser{OpCodes: opCodes, Lexer: &m_lexer}
-	parser.Parse()
-	utils.GetGlobalLogger().Info("done parsing", "opcode", parser.OpCodes)
+	m_parser := parser.Parser{OpCodes: opCodes, Lexer: &m_lexer}
+	m_parser.Parse()
+	utils.GetGlobalLogger().Info("done parsing", "opcode", m_parser.OpCodes)
 
 }

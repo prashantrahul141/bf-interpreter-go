@@ -7,25 +7,6 @@ import (
 	"fmt"
 )
 
-// interface to implement lexer.
-type ILexer interface {
-	// Scans tokens and stores them in the
-	// lexer's tokens slice.
-	ParseTokens()
-
-	// Returns next token in the stream AND consumes it
-	// Returns TokenEOF if there are no tokens left in stream.
-	Pop()
-
-	// Returns next token in the stream without consuming it.
-	// Returns TokenEOF if there are no tokens left
-	// in stream.
-	Peek()
-
-	// Private function to add token at given line number of given type.
-	addToken(line uint32, token_type types.TokenType)
-}
-
 // Top level lexer
 // implements `ILexer`
 type Lexer struct {
@@ -33,6 +14,8 @@ type Lexer struct {
 	Source string
 }
 
+// Scans tokens and stores them in the
+// lexer's tokens slice.
 func (lexer *Lexer) ParseTokens() {
 	utils.GetGlobalLogger().Info("start parsing tokens.")
 	var line uint32 = 0
@@ -72,7 +55,7 @@ func (lexer *Lexer) ParseTokens() {
 		}
 	}
 
-	lexer.Tokens = append(lexer.Tokens, types.Token{line + 1, types.TokenEof})
+	lexer.Tokens = append(lexer.Tokens, types.Token{Line: line + 1, Token_type: types.TokenEof})
 
 	utils.GetGlobalLogger().Debug("reversing array.")
 	// reverse array because we will be using peek and pop to retrive tokens.
@@ -84,19 +67,24 @@ func (lexer *Lexer) ParseTokens() {
 	}
 }
 
+// Returns next token in the stream without consuming it.
+// Returns TokenEOF if there are no tokens left
+// in stream.
 func (lexer *Lexer) Peek() types.Token {
 	var peekedToken types.Token
 	if len(lexer.Tokens) > 0 {
 		peekedToken = lexer.Tokens[len(lexer.Tokens)-1]
 	} else {
-		peekedToken = types.Token{0, types.TokenEof}
+		peekedToken = types.Token{Line: 0, Token_type: types.TokenEof}
 	}
 	utils.GetGlobalLogger().Debug("peeked", "token", peekedToken)
 	return peekedToken
 }
 
+// Returns next token in the stream AND consumes it
+// Returns TokenEOF if there are no tokens left in stream.
 func (lexer *Lexer) Pop() types.Token {
-	popedToken := types.Token{0, types.TokenEof}
+	popedToken := types.Token{Line: 0, Token_type: types.TokenEof}
 	if len(lexer.Tokens) > 0 {
 		popedToken = lexer.Tokens[len(lexer.Tokens)-1]
 		lexer.Tokens = lexer.Tokens[:len(lexer.Tokens)-1]
@@ -106,8 +94,9 @@ func (lexer *Lexer) Pop() types.Token {
 	return popedToken
 }
 
+// Private function to add token at given line number of given type.
 func (lexer *Lexer) addToken(line uint32, token_type types.TokenType) {
-	var newToken = types.Token{line, token_type}
+	var newToken = types.Token{Line: line, Token_type: token_type}
 	utils.GetGlobalLogger().Debug("add", "token", newToken)
 	lexer.Tokens = append(lexer.Tokens, newToken)
 }
