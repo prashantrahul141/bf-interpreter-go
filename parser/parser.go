@@ -13,6 +13,8 @@ type IParser interface {
 	Parse()
 	// parses one statement at a time.
 	parseOpCode()
+	// parses '[' square
+	parseLeftSquare()
 	// Matches current token with the given token.
 	matchToken(types.Token) bool
 	// Returns if there are no more tokens to parse.
@@ -59,6 +61,28 @@ func (parser *Parser) parseOpCode() {
 
 }
 
+// parses '[' square
+func (parser *Parser) parseLeftSquare() {
+	var jumpLen int32 = 1 // this will keep count of number of instructions we need to jump back.
+	// loop untill we reach a right square token.
+	for !parser.matchToken(types.TokenRightSquare) && !parser.matchToken(types.TokenEof) {
+		jumpLen++
+		parser.parseNormalToken(parser.Lexer.Pop().Token_type)
+	}
+
+	parser.emitOpCode(types.MoveIPtr)
+	parser.emitInt32(-jumpLen)
+
+	fmt.Print(parser.Lexer.Peek())
+
+	if parser.matchToken(types.TokenEof) {
+		utils.Error("Non-terminating '['", parser.Lexer.Peek().Line)
+	}
+
+	// consume ending right square bracket.
+	parser.Lexer.Pop()
+
+}
 
 // Matches current token with the given token.
 func (parser *Parser) matchToken(ttype types.TokenType) bool {
