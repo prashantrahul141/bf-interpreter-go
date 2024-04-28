@@ -29,3 +29,20 @@ func BfigoPanic(message string) {
 	fmt.Print(message + "\n")
 	os.Exit(1)
 }
+
+// Open and read file from command line.
+func GetFileContent() string {
+	argPassed := os.Args[1:]
+	if len(argPassed) <= 0 {
+		BfigoPanic(fmt.Sprint("Not enough arguments were passed.\n", USAGE))
+	}
+
+	GetGlobalLogger().Debug("", "filename", argPassed[0])
+
+	fileContent, err := os.ReadFile(argPassed[0])
+	if err != nil {
+		BfigoPanic(fmt.Sprintf("File '%s' does not exists.", argPassed[0]))
+	}
+
+	return string(fileContent)
+}
