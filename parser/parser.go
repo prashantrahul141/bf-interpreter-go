@@ -70,10 +70,10 @@ func (parser *Parser) parseLeftSquare() {
 func (parser *Parser) parseNormalToken(tt types.TokenType) {
 	switch tt {
 	case types.TokenRightAngle:
-		parser.emitOpCode(types.MovePtrForward)
+		parser.emitOpCode(types.MoveDPtrForward)
 
 	case types.TokenLeftAngle:
-		parser.emitOpCode(types.MovePtrBackward)
+		parser.emitOpCode(types.MoveDPtrBackward)
 
 	case types.TokenPlus:
 		parser.emitOpCode(types.Increment)

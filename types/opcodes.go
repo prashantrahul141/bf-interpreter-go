@@ -5,8 +5,8 @@ type OpCode int32
 
 // all the possible types opcodes supported by the vm.
 const (
-	MovePtrForward OpCode = iota
-	MovePtrBackward
+	MoveDPtrForward OpCode = iota
+	MoveDPtrBackward
 	ReadFromStdin
 	WriteToStdin
 	Increment
@@ -17,9 +17,9 @@ const (
 // impl stringer for OpCode
 func (op OpCode) String() string {
 	switch op {
-	case MovePtrForward:
+	case MoveDPtrForward:
 		return "OpCode(MovePtrForward)"
-	case MovePtrBackward:
+	case MoveDPtrBackward:
 		return "OpCode(MovePtrBackward)"
 	case ReadFromStdin:
 		return "OpCode(ReadFromStdin)"
