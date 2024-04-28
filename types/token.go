@@ -11,10 +11,10 @@ const (
 	TokenLeftAngle                    // <
 	TokenPlus                         // +
 	TokenMinus                        // -
-	TokenRightSquare                  // ]
-	TokenLeftSquare                   // [
 	TokenComma                        // ,
 	TokenDot                          // .
+	TokenRightSquare                  // ]
+	TokenLeftSquare                   // [
 	TokenEof                          // end of file.
 )
 
@@ -29,14 +29,14 @@ func (ttype TokenType) String() string {
 		return "TokenType(+)"
 	case TokenMinus:
 		return "TokenType(-)"
-	case TokenRightSquare:
-		return "TokenType(])"
-	case TokenLeftSquare:
-		return "TokenType([)"
 	case TokenComma:
 		return "TokenType(,)"
 	case TokenDot:
 		return "TokenType(.)"
+	case TokenRightSquare:
+		return "TokenType(])"
+	case TokenLeftSquare:
+		return "TokenType([)"
 	case TokenEof:
 		return "TokenType(EOF)"
 	}
