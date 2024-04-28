@@ -35,10 +35,11 @@ type Lexer struct {
 
 func (lexer *Lexer) ParseTokens() {
 	utils.GetGlobalLogger().Info("start parsing tokens.")
-	var line uint32 = 1
+	var line uint32 = 0
 
 	for _, char := range lexer.Source {
-		if char == 10 {
+		if char == utils.EOF_ASCII_CODE {
+			utils.GetGlobalLogger().Info("breaking parsing tokens")
 			break
 		}
 		utils.GetGlobalLogger().Debug("current", "char", char)
@@ -73,7 +74,7 @@ func (lexer *Lexer) ParseTokens() {
 
 	lexer.Tokens = append(lexer.Tokens, types.Token{line + 1, types.TokenEof})
 
-	utils.GetGlobalLogger().Info("reversing array.")
+	utils.GetGlobalLogger().Debug("reversing array.")
 	// reverse array because we will be using peek and pop to retrive tokens.
 	utils.ReverseArray(lexer.Tokens)
 
