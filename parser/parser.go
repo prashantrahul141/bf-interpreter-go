@@ -11,6 +11,8 @@ import (
 type IParser interface {
 	// public method to start the parsing process.
 	Parse()
+	// parses one statement at a time.
+	parseOpCode()
 	// Matches current token with the given token.
 	matchToken(types.Token) bool
 	// Returns if there are no more tokens to parse.
@@ -37,10 +39,25 @@ func (parser *Parser) Parse() {
 	}
 }
 
+// parses one statement at a time.
+func (parser *Parser) parseOpCode() {
+	// get the current token.
+	current := parser.Lexer.Pop()
 
+	switch current.Token_type {
+	case types.TokenLeftSquare:
+		parser.parseLeftSquare()
 
+		// we called a right square token without a starting '[' block.
+	case types.TokenRightSquare:
+		utils.Error("Got ']' outside a loop block.", current.Line)
 
+	// parses every other token.
+	default:
+		parser.parseNormalToken(current.Token_type)
+	}
 
+}
 
 
 // Matches current token with the given token.
