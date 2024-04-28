@@ -28,6 +28,14 @@ type Parser struct {
 	Lexer   *lexer.Lexer
 }
 
+// public method to start the parsing process.
+func (parser *Parser) Parse() {
+	utils.GetGlobalLogger().Info("starting parsing.")
+	// loop until we reach EOF token.
+	for !parser.matchToken(types.TokenEof) {
+		parser.parseOpCode()
+	}
+}
 
 
 
