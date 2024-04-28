@@ -1,7 +1,7 @@
 package types
 
 // Opcode enum parent.
-type OpCode uint8
+type OpCode int32
 
 // all the possible types opcodes supported by the vm.
 const (
@@ -11,6 +11,7 @@ const (
 	WriteToStdin
 	Increment
 	Decrement
+	MoveIPtr
 )
 
 // impl stringer for OpCode
@@ -28,6 +29,8 @@ func (op OpCode) String() string {
 		return "OpCode(Increment)"
 	case Decrement:
 		return "OpCode(Decrement)"
+	case MoveIPtr:
+		return "OpCode(MoveIPtr)"
 	}
 
 	return "OpCode(unkown)"
