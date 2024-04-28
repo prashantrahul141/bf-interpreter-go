@@ -15,6 +15,8 @@ type IParser interface {
 	parseOpCode()
 	// parses '[' square
 	parseLeftSquare()
+	// parses a norma token ( basically everything but '[' )
+	parseNormalToken()
 	// Matches current token with the given token.
 	matchToken(types.Token) bool
 	// Returns if there are no more tokens to parse.
@@ -82,6 +84,32 @@ func (parser *Parser) parseLeftSquare() {
 	// consume ending right square bracket.
 	parser.Lexer.Pop()
 
+}
+
+// parses a norma token ( basically everything but '[' )
+func (parser *Parser) parseNormalToken(tt types.TokenType) {
+	switch tt {
+	case types.TokenRightAngle:
+		parser.emitOpCode(types.MovePtrForward)
+
+	case types.TokenLeftAngle:
+		parser.emitOpCode(types.MovePtrBackward)
+
+	case types.TokenPlus:
+		parser.emitOpCode(types.Increment)
+
+	case types.TokenMinus:
+		parser.emitOpCode(types.Decrement)
+
+	case types.TokenComma:
+		parser.emitOpCode(types.ReadFromStdin)
+
+	case types.TokenDot:
+		parser.emitOpCode(types.WriteToStdin)
+
+	default:
+		utils.BfigoPanic(fmt.Sprintf("Recieved a non-normal token in parseNormalToken : '%s'", tt))
+	}
 }
 
 // Matches current token with the given token.
