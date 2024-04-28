@@ -5,6 +5,7 @@ import (
 	"bfigo/parser"
 	"bfigo/types"
 	"bfigo/utils"
+	"bfigo/vm"
 )
 
 type App struct {
@@ -22,5 +23,8 @@ func (app *App) Run() {
 	m_parser := parser.Parser{OpCodes: opCodes, Lexer: &m_lexer}
 	m_parser.Parse()
 	utils.GetGlobalLogger().Info("done parsing", "opcode", m_parser.OpCodes)
+
+	var vm_initial_state [utils.VM_DATA_SIZE]uint8
+	m_vm := vm.Vm{Ip: 0, Dp: 0, State: vm_initial_state, OpCodes: m_parser.OpCodes}
 
 }
