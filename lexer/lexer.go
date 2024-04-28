@@ -4,7 +4,6 @@ package lexer
 import (
 	"bfigo/types"
 	"bfigo/utils"
-	"fmt"
 )
 
 // Top level lexer
@@ -18,7 +17,7 @@ type Lexer struct {
 // lexer's tokens slice.
 func (lexer *Lexer) ParseTokens() {
 	utils.GetGlobalLogger().Info("start parsing tokens.")
-	var line uint32 = 0
+	var line uint32 = 1
 
 	for _, char := range lexer.Source {
 		if char == utils.EOF_ASCII_CODE {
@@ -46,12 +45,8 @@ func (lexer *Lexer) ParseTokens() {
 			lexer.addToken(line, types.TokenRightAngle)
 		case '\n':
 			line++
-		case ' ' | '\t':
-		// do nothing, dont need break because we are using hecking go.
-
 		default:
-			utils.Error(
-				fmt.Sprintf("Found unrecognised character: '%v'", char), line)
+			// do nothing, dont need break because we are using hecking go.
 		}
 	}
 
@@ -77,7 +72,7 @@ func (lexer *Lexer) Peek() types.Token {
 	} else {
 		peekedToken = types.Token{Line: 0, Token_type: types.TokenEof}
 	}
-	utils.GetGlobalLogger().Debug("peeked", "token", peekedToken)
+	// utils.GetGlobalLogger().Debug("peeked", "token", peekedToken)
 	return peekedToken
 }
 
@@ -90,7 +85,7 @@ func (lexer *Lexer) Pop() types.Token {
 		lexer.Tokens = lexer.Tokens[:len(lexer.Tokens)-1]
 	}
 
-	utils.GetGlobalLogger().Debug("poped", "token", popedToken)
+	// utils.GetGlobalLogger().Debug("poped", "token", popedToken)
 	return popedToken
 }
 
