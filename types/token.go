@@ -40,7 +40,7 @@ func (ttype TokenType) String() string {
 	case TokenEof:
 		return "TokenType(EOF)"
 	}
-	return "TokenType(unkown)"
+	return fmt.Sprintf("TokenType(%d)", int(ttype))
 }
 
 // Type of a specific token.

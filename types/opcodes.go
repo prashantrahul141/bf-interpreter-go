@@ -1,5 +1,7 @@
 package types
 
+import "fmt"
+
 // Opcode enum parent.
 type OpCode int32
 
@@ -33,5 +35,5 @@ func (op OpCode) String() string {
 		return "OpCode(MoveIPtr)"
 	}
 
-	return "OpCode(unkown)"
+	return fmt.Sprintf("OpCode(%d)", int(op))
 }
