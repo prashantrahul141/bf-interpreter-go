@@ -5,6 +5,8 @@ import (
 	"bfigo/types"
 	"bfigo/utils"
 	"fmt"
+
+	"github.com/charmbracelet/log"
 )
 
 // Top level parser
@@ -12,11 +14,13 @@ import (
 type Parser struct {
 	OpCodes []int32
 	Lexer   *lexer.Lexer
+
+	Logger *log.Logger
 }
 
 // public method to start the parsing process.
 func (parser *Parser) Parse() {
-	utils.GetGlobalLogger().Info("starting parsing ------------------------------------------------")
+	parser.Logger.Info("starting parsing ------------------------------------------------")
 	// loop until we reach EOF token.
 	for !parser.matchToken(types.TokenEof) {
 		parser.parseOpCode()
@@ -25,7 +29,7 @@ func (parser *Parser) Parse() {
 
 // parses one statement at a time.
 func (parser *Parser) parseOpCode() {
-	utils.GetGlobalLogger().Debug("current", "token", parser.Lexer.Peek().Token_type)
+	parser.Logger.Debug("current", "token", parser.Lexer.Peek().Token_type)
 	// get the current token.
 	current := parser.Lexer.Pop()
 
@@ -105,7 +109,7 @@ func (parser *Parser) isEmpty() bool {
 
 // emits int32
 func (parser *Parser) emitInt32(t int32) {
-	utils.GetGlobalLogger().Debug("emiting", "type", types.OpCode(t))
+	parser.Logger.Debug("emiting", "type", types.OpCode(t))
 	parser.OpCodes = append(parser.OpCodes, t)
 }
 

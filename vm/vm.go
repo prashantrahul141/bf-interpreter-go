@@ -5,8 +5,8 @@ import (
 	"bfigo/utils"
 	"fmt"
 	"os"
-	"time"
 
+	"github.com/charmbracelet/log"
 	"golang.org/x/term"
 )
 
@@ -16,10 +16,12 @@ type Vm struct {
 	Dp      int32                      // data pointer
 	State   [utils.VM_STATE_SIZE]uint8 // Vm's internal state of the memory.
 	OpCodes []int32                    // instructions to execute.
+
+	Logger *log.Logger
 }
 
 func (vm *Vm) Execute() {
-	utils.GetGlobalLogger().Info("starting execution ---------------------------------------------")
+	vm.Logger.Info("starting execution ---------------------------------------------")
 	for int(vm.Ip) != len(vm.OpCodes) {
 		instruction := vm.OpCodes[vm.Ip]
 		vm.executeInstruction(types.OpCode(instruction))
@@ -27,8 +29,7 @@ func (vm *Vm) Execute() {
 }
 
 func (vm *Vm) executeInstruction(instruction types.OpCode) {
-	utils.GetGlobalLogger().Debug("executing", "instruction", instruction)
-	time.Sleep(40000 * time.Microsecond)
+	vm.Logger.Debug("executing", "instruction", instruction)
 	switch instruction {
 	case types.MoveDPtrForward:
 		vm.execMoveDPtrFoward()
@@ -106,13 +107,13 @@ func (vm *Vm) execDecrement() {
 }
 
 func (vm *Vm) execMoveIPtr() {
-	utils.GetGlobalLogger().Debug(vm.State)
+	vm.Logger.Debug(vm.State)
 	if vm.State[vm.Dp] == 0 {
 		vm.Ip += 2
 		return
 	}
 
 	jumpLen := vm.OpCodes[vm.Ip+1]
-	utils.GetGlobalLogger().Info("jumping", "len", jumpLen)
+	vm.Logger.Info("jumping", "len", jumpLen)
 	vm.Ip = int32(jumpLen)
 }

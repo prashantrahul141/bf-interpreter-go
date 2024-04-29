@@ -4,6 +4,8 @@ package lexer
 import (
 	"bfigo/types"
 	"bfigo/utils"
+
+	"github.com/charmbracelet/log"
 )
 
 // Top level lexer
@@ -11,20 +13,21 @@ import (
 type Lexer struct {
 	Tokens []types.Token
 	Source string
+	Logger *log.Logger
 }
 
 // Scans tokens and stores them in the
 // lexer's tokens slice.
 func (lexer *Lexer) ParseTokens() {
-	utils.GetGlobalLogger().Info("start parsing tokens.")
+	lexer.Logger.Info("start parsing tokens.")
 	var line uint32 = 1
 
 	for _, char := range lexer.Source {
 		if char == utils.EOF_ASCII_CODE {
-			utils.GetGlobalLogger().Info("breaking parsing tokens")
+			lexer.Logger.Info("breaking parsing tokens")
 			break
 		}
-		utils.GetGlobalLogger().Debug("current", "char", char)
+		lexer.Logger.Debug("current", "char", char)
 
 		switch char {
 		case '.':
@@ -52,13 +55,13 @@ func (lexer *Lexer) ParseTokens() {
 
 	lexer.Tokens = append(lexer.Tokens, types.Token{Line: line + 1, Token_type: types.TokenEof})
 
-	utils.GetGlobalLogger().Debug("reversing array.")
+	lexer.Logger.Debug("reversing array.")
 	// reverse array because we will be using peek and pop to retrive tokens.
 	utils.ReverseArray(lexer.Tokens)
 
-	utils.GetGlobalLogger().Info("parsed tokens (in reverse order): ")
+	lexer.Logger.Info("parsed tokens (in reverse order): ")
 	for _, v := range lexer.Tokens {
-		utils.GetGlobalLogger().Info(v)
+		lexer.Logger.Info(v)
 	}
 }
 
@@ -72,7 +75,7 @@ func (lexer *Lexer) Peek() types.Token {
 	} else {
 		peekedToken = types.Token{Line: 0, Token_type: types.TokenEof}
 	}
-	// utils.GetGlobalLogger().Debug("peeked", "token", peekedToken)
+	// lexer.Logger.Debug("peeked", "token", peekedToken)
 	return peekedToken
 }
 
@@ -85,13 +88,13 @@ func (lexer *Lexer) Pop() types.Token {
 		lexer.Tokens = lexer.Tokens[:len(lexer.Tokens)-1]
 	}
 
-	// utils.GetGlobalLogger().Debug("poped", "token", popedToken)
+	// lexer.Logger.Debug("poped", "token", popedToken)
 	return popedToken
 }
 
 // Private function to add token at given line number of given type.
 func (lexer *Lexer) addToken(line uint32, token_type types.TokenType) {
 	var newToken = types.Token{Line: line, Token_type: token_type}
-	utils.GetGlobalLogger().Debug("add", "token", newToken)
+	lexer.Logger.Debug("add", "token", newToken)
 	lexer.Tokens = append(lexer.Tokens, newToken)
 }
