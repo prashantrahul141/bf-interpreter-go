@@ -16,7 +16,7 @@ type Parser struct {
 
 // public method to start the parsing process.
 func (parser *Parser) Parse() {
-	utils.GetGlobalLogger().Info("starting parsing.")
+	utils.GetGlobalLogger().Info("starting parsing ------------------------------------------------")
 	// loop until we reach EOF token.
 	for !parser.matchToken(types.TokenEof) {
 		parser.parseOpCode()
@@ -25,6 +25,7 @@ func (parser *Parser) Parse() {
 
 // parses one statement at a time.
 func (parser *Parser) parseOpCode() {
+	utils.GetGlobalLogger().Debug("current", "token", parser.Lexer.Peek().Token_type)
 	// get the current token.
 	current := parser.Lexer.Pop()
 
@@ -40,22 +41,20 @@ func (parser *Parser) parseOpCode() {
 	default:
 		parser.parseNormalToken(current.Token_type)
 	}
-
 }
 
 // parses '[' square
 func (parser *Parser) parseLeftSquare() {
-	var jumpLen int32 = 1 // this will keep count of number of instructions we need to jump back.
+	// this will store position of the instruction to jump to after parsing.
+	initialPos := len(parser.OpCodes)
+
 	// loop untill we reach a right square token.
 	for !parser.matchToken(types.TokenRightSquare) && !parser.matchToken(types.TokenEof) {
-		jumpLen++
-		parser.parseNormalToken(parser.Lexer.Pop().Token_type)
+		parser.parseOpCode()
 	}
 
 	parser.emitOpCode(types.MoveIPtr)
-	parser.emitInt32(-jumpLen)
-
-	fmt.Print(parser.Lexer.Peek())
+	parser.emitInt32(int32(initialPos))
 
 	if parser.matchToken(types.TokenEof) {
 		utils.Error("Non-terminating '['", parser.Lexer.Peek().Line)
@@ -63,7 +62,6 @@ func (parser *Parser) parseLeftSquare() {
 
 	// consume ending right square bracket.
 	parser.Lexer.Pop()
-
 }
 
 // parses a norma token ( basically everything but '[' )
@@ -107,7 +105,7 @@ func (parser *Parser) isEmpty() bool {
 
 // emits int32
 func (parser *Parser) emitInt32(t int32) {
-	utils.GetGlobalLogger().Debug("emiting", "type", t)
+	utils.GetGlobalLogger().Debug("emiting", "type", types.OpCode(t))
 	parser.OpCodes = append(parser.OpCodes, t)
 }
 
