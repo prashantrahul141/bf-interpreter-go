@@ -19,6 +19,32 @@ type Vm struct {
 	OpCodes []int32                    // instructions to execute.
 }
 
+func (vm *Vm) executeInstruction(instruction types.OpCode) {
+	utils.GetGlobalLogger().Debug("executing", "instruction", instruction)
+	time.Sleep(40000 * time.Microsecond)
+	switch instruction {
+	case types.MoveDPtrForward:
+		vm.execMoveDPtrFoward()
+
+	case types.MoveDPtrBackward:
+		vm.execMoveDPtrBackward()
+
+	case types.ReadFromStdin:
+		vm.execReadFromStdin()
+
+	case types.WriteToStdin:
+		vm.execWriteToStdin()
+
+	case types.Increment:
+		vm.execIncrement()
+
+	case types.Decrement:
+		vm.execDecrement()
+
+	case types.MoveIPtr:
+		vm.execMoveIPtr()
+	}
+}
 
 func (vm *Vm) execMoveDPtrFoward() {
 	vm.Ip++
