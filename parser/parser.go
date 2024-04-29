@@ -49,6 +49,7 @@ func (parser *Parser) parseOpCode() {
 
 // parses '[' square
 func (parser *Parser) parseLeftSquare() {
+	parser.Logger.Debug("parse left square")
 	// this will store position of the instruction to jump to after parsing.
 	initialPos := len(parser.OpCodes)
 
@@ -70,6 +71,7 @@ func (parser *Parser) parseLeftSquare() {
 
 // parses a norma token ( basically everything but '[' )
 func (parser *Parser) parseNormalToken(tt types.TokenType) {
+	parser.Logger.Debug("normal token", "type", tt)
 	switch tt {
 	case types.TokenRightAngle:
 		parser.emitOpCode(types.MoveDPtrForward)

@@ -10,7 +10,7 @@ import (
 func getLevel() log.Level {
 	devEnv := os.Getenv("DEV")
 	if len(devEnv) > 0 {
-		return log.InfoLevel
+		return log.DebugLevel
 	}
 
 	return log.ErrorLevel

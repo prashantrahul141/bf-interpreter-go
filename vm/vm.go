@@ -57,6 +57,8 @@ func (vm *Vm) executeInstruction(instruction types.OpCode) {
 func (vm *Vm) execMoveDPtrFoward() {
 	vm.Ip++
 
+	vm.Logger.Debug("move dptr forward")
+
 	vm.Dp++
 	if int(vm.Dp) >= utils.VM_STATE_SIZE {
 		vm.Dp = 0
@@ -65,6 +67,8 @@ func (vm *Vm) execMoveDPtrFoward() {
 
 func (vm *Vm) execMoveDPtrBackward() {
 	vm.Ip++
+
+	vm.Logger.Debug("move dptr backward")
 
 	vm.Dp--
 	if vm.Dp < 0 {
@@ -76,44 +80,51 @@ func (vm *Vm) execReadFromStdin() {
 	// switch stdin into 'raw' mode
 	oldState, err := term.MakeRaw(int(os.Stdin.Fd()))
 	if err != nil {
-		fmt.Println(err)
+		utils.BfigoPanic("Couldn't read from stdin in raw mode.")
 		return
 	}
+
 	defer term.Restore(int(os.Stdin.Fd()), oldState)
 
 	b := make([]byte, 1)
 	_, err = os.Stdin.Read(b)
 	if err != nil {
-		fmt.Println(err)
+		utils.BfigoPanic("Couldn't read from stdin in raw mode.")
 		return
 	}
+
+	vm.Logger.Debug("read from stdin", "char", b[0])
+
+	vm.State[vm.Dp] = b[0]
 	vm.Ip++
 }
 
 func (vm *Vm) execWriteToStdin() {
-	data := vm.State[vm.Dp]
-	fmt.Printf("%c", data)
+	c := vm.State[vm.Dp]
+	vm.Logger.Debug("writing to stdin", "char", c)
+	fmt.Printf("%c", c)
 	vm.Ip++
 }
 
 func (vm *Vm) execIncrement() {
+	vm.Logger.Debug("increment at", "DP", vm.Dp)
 	vm.State[vm.Dp]++
 	vm.Ip++
 }
 
 func (vm *Vm) execDecrement() {
+	vm.Logger.Debug("decrement at", "DP", vm.Dp)
 	vm.State[vm.Dp]--
 	vm.Ip++
 }
 
 func (vm *Vm) execMoveIPtr() {
-	vm.Logger.Debug(vm.State)
 	if vm.State[vm.Dp] == 0 {
 		vm.Ip += 2
 		return
 	}
 
 	jumpLen := vm.OpCodes[vm.Ip+1]
-	vm.Logger.Info("jumping", "len", jumpLen)
+	vm.Logger.Debug("jumping", "ip", jumpLen)
 	vm.Ip = int32(jumpLen)
 }
