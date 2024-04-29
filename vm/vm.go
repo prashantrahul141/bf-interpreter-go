@@ -1,6 +1,5 @@
 package vm
 
-import "bfigo/utils"
 import (
 	"bfigo/types"
 	"bfigo/utils"
@@ -17,6 +16,14 @@ type Vm struct {
 	Dp      int32                      // data pointer
 	State   [utils.VM_STATE_SIZE]uint8 // Vm's internal state of the memory.
 	OpCodes []int32                    // instructions to execute.
+}
+
+func (vm *Vm) Execute() {
+	utils.GetGlobalLogger().Info("starting execution ---------------------------------------------")
+	for int(vm.Ip) != len(vm.OpCodes) {
+		instruction := vm.OpCodes[vm.Ip]
+		vm.executeInstruction(types.OpCode(instruction))
+	}
 }
 
 func (vm *Vm) executeInstruction(instruction types.OpCode) {
