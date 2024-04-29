@@ -3,6 +3,8 @@ package utils
 import (
 	"fmt"
 	"os"
+
+	"github.com/charmbracelet/log"
 )
 
 // Reverses a given string.
@@ -25,19 +27,23 @@ func ReverseArray[T any](s []T) {
 
 // Our panic implementation
 func BfigoPanic(message string) {
-	GetGlobalLogger().Error("PANIC :", "message", message)
+	devEnv := os.Getenv("DEV")
+	if len(devEnv) > 0 {
+		log.Error("PANIC :", "message", message)
+	}
+
 	fmt.Print(message + "\n")
 	os.Exit(1)
 }
 
 // Open and read file from command line.
-func GetFileContent() string {
+func GetFileContent(logger *log.Logger) string {
 	argPassed := os.Args[1:]
 	if len(argPassed) <= 0 {
 		BfigoPanic(fmt.Sprint("Not enough arguments were passed.\n", USAGE))
 	}
 
-	GetGlobalLogger().Debug("", "filename", argPassed[0])
+	logger.Debug("", "filename", argPassed[0])
 
 	fileContent, err := os.ReadFile(argPassed[0])
 	if err != nil {
